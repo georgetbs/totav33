@@ -1,0 +1,76 @@
+{
+  "telegram": {
+      "ka": [
+          {
+              "url": "https://t.me/s/CivilConsent",
+              "name": "Civil Consent",
+              "feed_id": "civil_consent",
+              "tags": ["News", "Politics"]
+          },
+          {
+              "url": "https://t.me/s/worldmilitary12345",
+              "name": "World Military",
+              "feed_id": "worldmilitary12345",
+              "tags": ["Military", "News"]
+          },
+          {
+              "url": "https://t.me/s/alphafrequency1",
+              "name": "Alpha Frequency",
+              "feed_id": "alphafrequency1",
+              "tags": ["Military"]
+          },
+          {
+              "url": "https://t.me/s/preludia22",
+              "name": "Preludia 22",
+              "feed_id": "preludia22",
+              "tags": ["Culture", "News"]
+          },
+          {
+              "url": "https://t.me/s/NotoRussianLawinGeorgia",
+              "name": "No to Russian Law in Georgia",
+              "feed_id": "noto_russian_law_in_georgia",
+              "tags": ["Politics", "Activism"]
+          }
+      ],
+      "en": [
+          {
+              "url": "https://t.me/s/library_about_georgia",
+              "name": "Library about Georgia",
+              "feed_id": "library_about_georgia",
+              "tags": ["History", "Culture", "Education"]
+          }
+      ],
+      "ru": [
+          {
+              "url": "https://t.me/s/tbilisi_life",
+              "name": "Tbilisi life",
+              "feed_id": "tbilisi_life",
+              "tags": ["News", "Lifestyle", "Events"]
+          },
+          {
+              "url": "https://t.me/s/valuestate",
+              "name": "Value State",
+              "feed_id": "valuestate",
+              "tags": ["Economics", "Finance"]
+          },
+          {
+              "url": "https://t.me/s/bitcoinquestchannel",
+              "name": "Bitcoin Quest Channel",
+              "feed_id": "bitcoinquestchannel",
+              "tags": ["Crypto", "Finance"]
+          },
+          {
+              "url": "https://t.me/s/paperkartuli",
+              "name": "Paper Kartuli",
+              "feed_id": "paperkartuli",
+              "tags": ["Culture","Lifestyle", "Magazine"]
+          },
+          {
+              "url": "https://t.me/s/sova_georgia",
+              "name": "SOVA.News — Всё о Грузии",
+              "feed_id": "sova_georgia",
+              "tags": ["News", "Politics"]
+          }
+      ]
+  }
+}

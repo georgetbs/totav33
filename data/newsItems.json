@@ -1,0 +1,144 @@
+{
+    "ka": [
+      {
+        "id": "all",
+        "name": "ამბები",
+        "sources": ["/api/news/1tv", "/api/news/alia", "/api/news/publika"],
+        "cacheKeys": ["news1tvMainGe", "newsAliaMain", "newsPublikaMain"],
+        "filterSubstrings": ["” –", "“ –", "ასტროლოგიური", "ვალუტის კურსი", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 125
+      },
+      {
+        "id": "politics",
+        "name": "პოლიტიკა",
+        "sources": ["/api/news/imedi", "/api/news/mtavari", "/api/news/publika", "/api/news/tvpirveli", "/api/news/tia", "/api/news/echo"],
+        "cacheKeys": ["newsMtavariPolitics", "newsPolitics", "newsEchoPolitics", "newsTVPirveliPolitics", "newsPublikaPolitics", "newsTiaFacePoltitcs"],
+        "filterSubstrings": ["” –", "“ –", "ასტროლოგიური", "ვალუტის კურსი", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "society",
+        "name": "საზოგადოება",
+        "sources": ["/api/news/primetime", "/api/news/tia", "/api/news/publika", "/api/news/mtavari", "/api/news/imedi", "/api/news/beaumonde"],
+        "cacheKeys": ["newsMtavariSociety", "newsImediSociety", "newsPrimetimeSociety", "newsTiaFaceSociety", "newsTiaSociety", "newsBeaumondeFashion"],
+        "filterSubstrings": ["” –", "“ –", "ასტროლოგიური", "ვალუტის კურსი", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "sport",
+        "name": "სპორტი",
+        "sources": ["/api/news/croco", "/api/news/europop"],
+        "cacheKeys": ["newsCrocoSports", "newsEuropopSports"],
+        "filterSubstrings": ["” –", "“ –", "ასტროლოგიური", "ვალუტის კურსი", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "economics",
+        "name": "ეკონომიკა",
+        "sources": ["/api/news/bm", "/api/news/imedi", "/api/news/mtavari"],
+        "cacheKeys": ["newsMtavariEconomics", "newsImediEconomics", "newsBMEconomics", "newsBMEconomicsBiznesi"],
+        "filterSubstrings": ["” –", "“ –", "ასტროლოგიური", "ვალუტის კურსი", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      }
+    ],
+    "en": [
+      {
+        "id": "all",
+        "name": "News",
+        "sources": ["/api/news/en/1tv", "/api/news/en/gt"],
+        "cacheKeys": ["news1tvMainEn", "GeorgiaTodayNews"],
+        "filterSubstrings": ["” –", "“ –", "Astrological", "Currency rate", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "politics",
+        "name": "Politics",
+        "sources": ["/api/news/en/imedi", "/api/news/en/gt"],
+        "cacheKeys": ["newsImediPoliticsEn", "GeorgiaTodayPolitics"],
+        "filterSubstrings": ["” –", "“ –", "Astrological", "Currency rate", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "society",
+        "name": "Society",
+        "sources": ["/api/news/en/gt"],
+        "cacheKeys": ["GeorgiaTodayCulture", "GeorgiaTodayTravel"],
+        "filterSubstrings": ["” –", "“ –", "Astrological", "Currency rate", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "sport",
+        "name": "Sports",
+        "sources": [],
+        "cacheKeys": [],
+        "filterSubstrings": ["” –", "“ –", "Astrological", "Currency rate", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "economics",
+        "name": "Economics",
+        "sources": ["/api/news/en/bm", "/api/news/en/imedi", "/api/news/en/gt"],
+        "cacheKeys": ["newsImediEconomicsEn", "newsBMEconomicsEn", "newsBMBusinessEn", "GeorgiaTodayBusiness"],
+        "filterSubstrings": ["” –", "“ –", "Astrological", "Currency rate", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      }
+    ],
+    "ru": [
+      {
+        "id": "all",
+        "name": "Новости",
+        "sources": ["/api/news/ru/1tv"],
+        "cacheKeys": ["news1tvMainRu"],
+        "filterSubstrings": ["” –", "“ –", "Астрологический", "Курс валют", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "politics",
+        "name": "Политика",
+        "sources": [],
+        "cacheKeys": [],
+        "filterSubstrings": ["” –", "“ –", "Астрологический", "Курс валют", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "society",
+        "name": "Общество",
+        "sources": [],
+        "cacheKeys": [],
+        "filterSubstrings": ["” –", "“ –", "Астрологический", "Курс валют", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "sport",
+        "name": "Спорт",
+        "sources": [],
+        "cacheKeys": [],
+        "filterSubstrings": ["” –", "“ –", "Астрологический", "Курс валют", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      },
+      {
+        "id": "economics",
+        "name": "Экономика",
+        "sources": ["/api/news/ru/bm"],
+        "cacheKeys": [ "newsBMEconomicsRu", "newsBMEconomicsBiznesiRu"],
+        "filterSubstrings": ["” –", "“ –", "Астрологический", "Курс валют", "”-"],
+        "maxNewsDisplay": 8,
+        "maxTitleLength": 95
+      }
+    ]
+  }
+  
