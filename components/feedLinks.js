@@ -3,7 +3,7 @@ import parse, { domToReact } from 'html-react-parser';
 import { useTranslation } from 'next-i18next';
 import { FaHeart, FaShareAlt, FaYoutube, FaTwitch, FaVideo, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import YouTube from 'react-youtube';
-import TwitchEmbed from 'react-twitch-embed';
+import { TwitchPlayer } from 'react-twitch-embed';
 
 const FeedLinks = ({ newsItems }) => {
   const { t } = useTranslation('common');
@@ -119,6 +119,14 @@ const FeedLinks = ({ newsItems }) => {
     });
   };
 
+  const isYouTubeVideoUrl = (url) => {
+    return url.includes('youtube.com/watch') || url.includes('youtu.be/');
+  };
+
+  const isTwitchVideoUrl = (url) => {
+    return url.includes('twitch.tv/videos');
+  };
+
   const renderYouTubePlayer = (url) => {
     try {
       let videoId = null;
@@ -158,7 +166,7 @@ const FeedLinks = ({ newsItems }) => {
       replace: (domNode) => {
         if (domNode.name === 'a' && domNode.attribs.href) {
           const href = domNode.attribs.href;
-          if (href.includes('youtube.com') || href.includes('youtu.be')) {
+          if (isYouTubeVideoUrl(href) || isTwitchVideoUrl(href)) {
             if (!videoUrls.includes(href)) {
               videoUrls.push(href);
             }
@@ -256,23 +264,42 @@ const FeedLinks = ({ newsItems }) => {
     );
   };
 
-  if (newsItems.length === 0) {
+  const filterNewsItems = (items) => {
+    return items.filter(news => {
+      // Exclude posts where the channel name contains "pinned"
+      if (news.channelName.toLowerCase().includes('pinned')) {
+        return false;
+      }
+
+      // Exclude posts with less than 100 characters of text without links if they have no images or videos
+      const textContent = stripHtml(news.titleHtml);
+      if (textContent.length < 100 && (!news.images || news.images.length === 0) && (!news.videos || news.videos.length === 0)) {
+        return false;
+      }
+
+      return true;
+    });
+  };
+
+  const filteredNewsItems = filterNewsItems(newsItems);
+
+  if (filteredNewsItems.length === 0) {
     return <div>{t('loading')}</div>;
   }
 
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 px-4 pb-6">
-        {newsItems.map((news, index) => {
+        {filteredNewsItems.map((news, index) => {
           const { contentWithVideo, videoUrls } = parseContent(news.titleHtml);
-          const hasYouTube = videoUrls.some(url => url.includes('youtube.com') || url.includes('youtu.be'));
-          const hasTwitch = news.link.includes('twitch.tv');
+          const hasYouTube = videoUrls.some(url => isYouTubeVideoUrl(url));
+          const hasTwitch = videoUrls.some(url => isTwitchVideoUrl(url));
           const hasOtherVideos = news.videos && news.videos.length > 0;
 
           return (
             <div
               key={index}
-              className="feed-item p-6 border rounded-3xl shadow-md hover:shadow-lg transition-shadow relative mb-8 cursor-pointer"
+              className="feed-item p-6 border rounded-3xl shadow-md hover:shadow-lg transition-shadow relative cursor-pointer"
               onClick={() => handleNewsClick(index)}
             >
               <div className="flex items-center mb-2">
@@ -345,7 +372,7 @@ const FeedLinks = ({ newsItems }) => {
               </div>
             )}
 
-            {selectedNews.link.includes('youtube.com') && (
+            {selectedNews.link.includes('youtube.com') && isYouTubeVideoUrl(selectedNews.link) && (
               <div className="relative w-full aspect-video max-h-[90vh] overflow-hidden rounded-3xl">
                 <YouTube 
                   videoId={renderYouTubePlayer(selectedNews.link)} 
@@ -361,9 +388,9 @@ const FeedLinks = ({ newsItems }) => {
               </div>
             )}
 
-            {selectedNews.link.includes('twitch.tv') && (
+            {selectedNews.link.includes('twitch.tv') && isTwitchVideoUrl(selectedNews.link) && (
               <div className="relative w-full aspect-video max-h-[90vh] overflow-hidden rounded-3xl">
-                <TwitchEmbed
+                <TwitchPlayer
                   channel={renderTwitchPlayer(selectedNews.link)}
                   width="100%"
                   height="100%"

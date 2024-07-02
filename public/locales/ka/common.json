@@ -63,6 +63,7 @@
   "vet_clinics": "ვეტ. კლინიკები",
   "forum": "ფორუმი",
   "tv_channels": "TV არხები",
+  "sport": "სპორტი",
   "all_services": "ყველა სერვისი",
   "back": "უკან",
   "currency_rates": "ვალუტის კურსები",
@@ -90,5 +91,10 @@
   "weather_by_part_of_day": "ამინდი დროის მიხედვით",
   "weather_by_hour": "საათობრივი ამინდი",
   "more_details": "დეტალურად",
-  "tota_services": "ტოტა სერვისები"
+  "tota_services": "ტოტა სერვისები",
+  "show_all_answers": "აჩვენეთ ყველა პასუხი",
+  "show_correct_answers": "სწორი პასუხების ჩვენება",
+  "show_incorrect_answers": "არასწორი პასუხების ჩვენება",
+  "show_hints": "მინიშნებების ჩვენება",
+  "hide_hints": "მინიშნებების დამალვა"
 }

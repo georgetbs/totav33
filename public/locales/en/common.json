@@ -63,6 +63,7 @@
   "vet_clinics": "Vet Clinics",
   "forum": "Forum",
   "tv_channels": "TV Channels",
+  "sport": "Sport",
   "all_services": "All Services",
   "back": "Back",
   "currency_rates": "Currency Rates",
@@ -90,5 +91,10 @@
     "weather_by_part_of_day": "Weather by Part of Day",
     "weather_by_hour": "Weather by Hour",
     "more_details": "More Details",
-    "tota_services": "Tota Services"    
+    "tota_services": "Tota Services",
+    "show_all_answers": "Show All Answers",
+    "show_correct_answers": "Show Correct Answers",
+    "show_incorrect_answers": "Show Incorrect Answers",
+    "show_hints": "Show Hints",
+    "hide_hints": "Hide Hints"
 }

@@ -63,6 +63,7 @@
   "vet_clinics": "Вет. клиники",
   "forum": "Форум",
   "tv_channels": "ТВ каналы",
+  "sport": "Спорт",
   "all_services": "Все услуги",
   "back": "Назад",
   "currency_rates": "Курсы валют",
@@ -90,5 +91,10 @@
   "weather_by_part_of_day": "Погода по времени суток",
   "weather_by_hour": "Погода по часам",
   "more_details": "Подробнее",
-  "tota_services": "Сервисы Tota"
+  "tota_services": "Сервисы Tota",
+  "show_all_answers": "Показать все ответы",
+  "show_correct_answers": "Показать правильные ответы",
+  "show_incorrect_answers": "Показать неправильные ответы",
+  "show_hints": "Показать подсказки",
+  "hide_hints": "Скрыть подсказки"
 }

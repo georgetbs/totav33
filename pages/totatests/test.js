@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Modal from 'react-modal';
 import Header from '@/components/Header';
-import Question from '@/components/Question';
 import Footer from '@/components/Footer';
 import languageData from '@/data/language.json';
 import historyData from '@/data/history.json';
 import lawData from '@/data/law.json';
-
-const categoryData = {
-  language: languageData,
-  history: historyData,
-  law: lawData,
-};
 
 const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
 
@@ -24,7 +17,14 @@ export default function Test() {
   const { t } = useTranslation('common');
   const router = useRouter();
   const { mode } = router.query;
-  const [selectedCategory, setSelectedCategory] = useState('');
+
+  const categoryData = useMemo(() => ({
+    language: languageData,
+    history: historyData,
+    law: lawData,
+  }), []);
+
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -40,9 +40,36 @@ export default function Test() {
   const [confirmAction, setConfirmAction] = useState(null);
   const [alertMessage, setAlertMessage] = useState('');
   const [confirmMode, setConfirmMode] = useState('');
+  const [showHints, setShowHints] = useState(true); // Default to true
+
+  useEffect(() => {
+    const cachedHints = localStorage.getItem('showHints');
+    if (cachedHints !== null) {
+      setShowHints(JSON.parse(cachedHints));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('showHints', JSON.stringify(showHints));
+  }, [showHints]);
+
+  const [showCorrectAnswers, setShowCorrectAnswers] = useState(false);
+  const [showIncorrectAnswers, setShowIncorrectAnswers] = useState(false);
+  const [showAllAnswers, setShowAllAnswers] = useState(false);
+
+  const handleCategoryChange = (category) => {
+    const updatedCategories = selectedCategories.includes(category)
+      ? selectedCategories.filter(cat => cat !== category)
+      : [...selectedCategories, category];
+    
+    setSelectedCategories(updatedCategories);
+
+    setNumQuestions(updatedCategories.length * 200 || 200);
+    setUseNumQuestions(updatedCategories.length !== 1);
+  };
 
   const handleStart = () => {
-    if (!selectedCategory) {
+    if (selectedCategories.length === 0) {
       setAlertMessage(t('please_select_category'));
       setConfirmMode('alert');
       setIsConfirmModalOpen(true);
@@ -50,41 +77,45 @@ export default function Test() {
     }
 
     let allQuestions = [];
-    const data = categoryData[selectedCategory] || [];
+    selectedCategories.forEach(category => {
+      const data = categoryData[category] || [];
+      allQuestions = [...allQuestions, ...data];
+    });
+
     if (mode === 'study') {
       if (useNumQuestions) {
-        allQuestions = shuffleArray(data).slice(0, numQuestions);
+        allQuestions = shuffleArray(allQuestions).slice(0, numQuestions);
       } else {
+        const categoryQuestions = categoryData[selectedCategories[0]];
         switch (questionSet) {
           case 'first':
-            allQuestions = data.slice(0, 50);
+            allQuestions = categoryQuestions.slice(0, 50);
             break;
           case 'second':
-            allQuestions = data.slice(50, 100);
+            allQuestions = categoryQuestions.slice(50, 100);
             break;
           case 'third':
-            allQuestions = data.slice(100, 150);
+            allQuestions = categoryQuestions.slice(100, 150);
             break;
           case 'fourth':
-            allQuestions = data.slice(150, 200);
+            allQuestions = categoryQuestions.slice(150, 200);
             break;
           default:
-            allQuestions = data;
+            allQuestions = categoryQuestions;
             break;
         }
       }
     } else {
-      allQuestions = data;
+      allQuestions = shuffleArray(allQuestions);
     }
 
     if (mode === 'exam') {
-      setQuestions(shuffleArray(allQuestions).slice(0, 10));
+      setQuestions(allQuestions.slice(0, 10));
       setTimer(20 * 60); // 20 минут
     } else {
       setQuestions(allQuestions);
     }
 
-    // Добавим к URL параметр questions для индикации начатого теста
     router.replace({
       pathname: router.pathname,
       query: { ...router.query, questions: true },
@@ -150,7 +181,7 @@ export default function Test() {
   };
 
   const handleRestart = () => {
-    setSelectedCategory('');
+    setSelectedCategories([]);
     setQuestions([]);
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
@@ -159,8 +190,9 @@ export default function Test() {
     setIncorrectCount(0);
     setPass(null);
     setTimer(0);
+    setNumQuestions(200);
+    setUseNumQuestions(true);
 
-    // Удалим параметр questions из URL
     router.replace({
       pathname: router.pathname,
       query: { mode: router.query.mode },
@@ -178,10 +210,72 @@ export default function Test() {
     setConfirmAction(null);
   };
 
+  const toggleHints = () => {
+    setShowHints(!showHints);
+  };
+
+  const toggleShowCorrectAnswers = () => {
+    setShowCorrectAnswers(true);
+    setShowIncorrectAnswers(false);
+    setShowAllAnswers(false);
+  };
+
+  const toggleShowIncorrectAnswers = () => {
+    setShowCorrectAnswers(false);
+    setShowIncorrectAnswers(true);
+    setShowAllAnswers(false);
+  };
+
+  const toggleShowAllAnswers = () => {
+    setShowCorrectAnswers(false);
+    setShowIncorrectAnswers(false);
+    setShowAllAnswers(true);
+  };
+
+  const Question = ({ question, questionIndex, totalQuestions, selectedAnswer, onAnswer, showHints }) => {
+    const handleAnswerChange = (e) => {
+      onAnswer(question.id, e.target.value);
+    };
+
+    return (
+      <div className="mb-6">
+        <h2 className="text-2xl mb-4">
+          {t('question')} {questionIndex + 1} / {totalQuestions}
+        </h2>
+        <p className="text-xl mb-4">{question.question}</p>
+        <div>
+          {question.options.map((option, index) => (
+            <label key={index} className="block mb-2">
+              <input
+                type="radio"
+                name={`question-${question.id}`}
+                value={option}
+                checked={selectedAnswer === option}
+                onChange={handleAnswerChange}
+                className="mr-2"
+              />
+              {option}
+              {showHints && selectedAnswer && (
+                <span className="ml-2">
+                  {option === question.answer ? '✔️' : (selectedAnswer === option ? '❌' : '')}
+                </span>
+              )}
+            </label>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header openConfirmModal={openConfirmModal} />
       <main className="flex-grow p-10">
+        {!showResults && questions.length > 0 && (
+          <button onClick={toggleHints} className={`p-2 border border-red-500 mb-4`}>
+            {showHints ? t('hide_hints') : t('show_hints')}
+          </button>
+        )}
         {!questions.length ? (
           <div>
             <h1 className="text-3xl mb-8">{t('choose_categories')}</h1>
@@ -193,8 +287,8 @@ export default function Test() {
                       type="radio"
                       name="category"
                       value="language"
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      checked={selectedCategory === 'language'}
+                      onChange={() => setSelectedCategories(['language'])}
+                      checked={selectedCategories.includes('language')}
                       className="mr-2 transform scale-150"
                     />{' '}
                     {t('language_test')}
@@ -204,8 +298,8 @@ export default function Test() {
                       type="radio"
                       name="category"
                       value="history"
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      checked={selectedCategory === 'history'}
+                      onChange={() => setSelectedCategories(['history'])}
+                      checked={selectedCategories.includes('history')}
                       className="mr-2 transform scale-150"
                     />{' '}
                     {t('history_test')}
@@ -215,8 +309,8 @@ export default function Test() {
                       type="radio"
                       name="category"
                       value="law"
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      checked={selectedCategory === 'law'}
+                      onChange={() => setSelectedCategories(['law'])}
+                      checked={selectedCategories.includes('law')}
                       className="mr-2 transform scale-150"
                     />{' '}
                     {t('law_test')}
@@ -228,13 +322,8 @@ export default function Test() {
                     <input
                       type="checkbox"
                       value="language"
-                      onChange={(e) =>
-                        setSelectedCategory(
-                          e.target.checked
-                            ? [...selectedCategory, e.target.value]
-                            : selectedCategory.filter((cat) => cat !== e.target.value)
-                        )
-                      }
+                      onChange={() => handleCategoryChange('language')}
+                      checked={selectedCategories.includes('language')}
                       className="mr-2 transform scale-150"
                     />{' '}
                     {t('language_test')}
@@ -243,13 +332,8 @@ export default function Test() {
                     <input
                       type="checkbox"
                       value="history"
-                      onChange={(e) =>
-                        setSelectedCategory(
-                          e.target.checked
-                            ? [...selectedCategory, e.target.value]
-                            : selectedCategory.filter((cat) => cat !== e.target.value)
-                        )
-                      }
+                      onChange={() => handleCategoryChange('history')}
+                      checked={selectedCategories.includes('history')}
                       className="mr-2 transform scale-150"
                     />{' '}
                     {t('history_test')}
@@ -258,13 +342,8 @@ export default function Test() {
                     <input
                       type="checkbox"
                       value="law"
-                      onChange={(e) =>
-                        setSelectedCategory(
-                          e.target.checked
-                            ? [...selectedCategory, e.target.value]
-                            : selectedCategory.filter((cat) => cat !== e.target.value)
-                        )
-                      }
+                      onChange={() => handleCategoryChange('law')}
+                      checked={selectedCategories.includes('law')}
                       className="mr-2 transform scale-150"
                     />{' '}
                     {t('law_test')}
@@ -290,9 +369,9 @@ export default function Test() {
                 <input
                   type="number"
                   value={numQuestions}
-                  onChange={(e) => setNumQuestions(e.target.value)}
+                  onChange={(e) => setNumQuestions(Number(e.target.value))}
                   className="block w-full p-2 border border-primary mb-4"
-                  disabled={!useNumQuestions}
+                  disabled={!useNumQuestions || selectedCategories.length !== 1}
                 />
                 <div className="flex items-center mb-2">
                   <label className="flex items-center cursor-pointer text-3xl">
@@ -303,6 +382,7 @@ export default function Test() {
                       checked={!useNumQuestions}
                       onChange={() => setUseNumQuestions(false)}
                       className="mr-2 transform scale-150"
+                      disabled={selectedCategories.length !== 1}
                     />
                     {t('select_question_set')}
                   </label>
@@ -311,7 +391,7 @@ export default function Test() {
                   value={questionSet}
                   onChange={(e) => setQuestionSet(e.target.value)}
                   className="block w-full p-2 border border-primary"
-                  disabled={useNumQuestions}
+                  disabled={useNumQuestions || selectedCategories.length !== 1}
                 >
                   <option value="first">{t('first_50')}</option>
                   <option value="second">{t('second_50')}</option>
@@ -327,41 +407,54 @@ export default function Test() {
           </div>
         ) : showResults ? (
           <div>
-            <h1 className="text-3xl mb-8">{t('results')}</h1>
+            <div className="mb-4">
+              <h1 className="text-4xl font-bold mb-4">{t('results')}</h1>
+              <p className="text-2xl mb-2">{t('correct_count')}: {correctCount}</p>
+              <p className="text-2xl mb-2">{t('incorrect_count')}: {incorrectCount}</p>
+              {mode === 'exam' && (
+                <p className="text-2xl mb-2">{t('verdict')}: {pass ? t('pass') : t('fail')}</p>
+              )}
+            </div>
+            <div className="mb-4 space-y-4 space-x-2">
+              <button onClick={toggleShowCorrectAnswers} className={`p-2 border-2 border-red-500 ${showCorrectAnswers ? 'bg-red-200' : ''}`}>
+                {t('show_correct_answers')}
+              </button>
+              <button onClick={toggleShowIncorrectAnswers} className={`p-2 border-2 border-red-500 ${showIncorrectAnswers ? 'bg-red-200' : ''}`}>
+                {t('show_incorrect_answers')}
+              </button>
+              <button onClick={toggleShowAllAnswers} className={`p-2 border-2 border-red-500 ${showAllAnswers ? 'bg-red-200' : ''}`}>
+                {t('show_all_answers')}
+              </button>
+            </div>
             <ul>
-              {questions.map((question, index) => (
+              {showCorrectAnswers && questions
+                .map((question, index) => ({ ...question, index: index + 1 }))
+                .filter((question) => selectedAnswers[question.id] === question.answer)
+                .map((question) => (
+                  <li key={question.id} className="mb-4">
+                    <p className="text-xl font-bold mb-2">{question.index}. {question.question}</p>
+                    <p className="text-lg mb-2">{t('your_answer')}: {selectedAnswers[question.id]}</p>
+                    <p className="text-lg mb-2">{t('correct_answer')}: {question.answer}</p>
+                  </li>
+                ))}
+              {showIncorrectAnswers && questions
+                .map((question, index) => ({ ...question, index: index + 1 }))
+                .filter((question) => selectedAnswers[question.id] !== question.answer)
+                .map((question) => (
+                  <li key={question.id} className="mb-4">
+                    <p className="text-xl font-bold mb-2">{question.index}. {question.question}</p>
+                    <p className="text-lg mb-2">{t('your_answer')}: {selectedAnswers[question.id]}</p>
+                    <p className="text-lg mb-2">{t('correct_answer')}: {question.answer}</p>
+                  </li>
+                ))}
+              {showAllAnswers && questions.map((question, index) => (
                 <li key={question.id} className="mb-4">
-                  <p>
-                    {index + 1}.{' '}
-                    {question.question.split('\n').map((line, index) => (
-                      <span key={index}>
-                        {line}
-                        <br />
-                      </span>
-                    ))}
-                  </p>
-                  <p>
-                    {t('your_answer')}: {selectedAnswers[question.id]}
-                  </p>
-                  <p>
-                    {t('correct_answer')}: {question.answer}
-                  </p>
+                  <p className="text-xl font-bold mb-2">{index + 1}. {question.question}</p>
+                  <p className="text-lg mb-2">{t('your_answer')}: {selectedAnswers[question.id]}</p>
+                  <p className="text-lg mb-2">{t('correct_answer')}: {question.answer}</p>
                 </li>
               ))}
             </ul>
-            <div className="mt-4">
-              <p>
-                {t('correct_count')}: {correctCount}
-              </p>
-              <p>
-                {t('incorrect_count')}: {incorrectCount}
-              </p>
-              {mode === 'exam' && (
-                <p>
-                  {t('verdict')}: {pass ? t('pass') : t('fail')}
-                </p>
-              )}
-            </div>
             <button onClick={handleRestart} className="p-2 border border-primary mt-4">
               {t('restart')}
             </button>
@@ -382,7 +475,7 @@ export default function Test() {
                 totalQuestions={questions.length}
                 selectedAnswer={selectedAnswers[questions[currentQuestionIndex]?.id]}
                 onAnswer={handleAnswer}
-                mode={mode}
+                showHints={showHints}
               />
             )}
             <div className="flex justify-between mt-4">
@@ -401,7 +494,6 @@ export default function Test() {
             </div>
           </>
         )}
-         
       </main>
 
       <Modal

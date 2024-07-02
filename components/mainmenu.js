@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import menuData from '../data/menuData.json';
-import DropdownFavicon from './dropdownfavicon';
 
-const desktopMenuCategories = ['tota_services', 'tickets', 'real_estate', 'stores', 'pharmacies', 'jobs', 'auto', 'handymen', 'school'];
+const desktopMenuCategories = ['tota_services', 'tickets', 'real_estate', 'stores', 'pharmacies', 'jobs', 'auto', 'handymen', 'school', 'tv_channels'];
 
 const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
   const { t } = useTranslation('common');
@@ -35,6 +34,24 @@ const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
   const handleCloseMenu = () => {
     setIsMobileMenuOpen(false);
     setActiveMobileCategory(null);
+  };
+
+  const DropdownContent = ({ t, items, isTotaServices }) => {
+    return (
+      <ul className="p-2 space-y-2">
+        {items.map((item) => (
+          <li key={item.href} className="p-2">
+            <a href={item.href} target="_blank" rel="noopener noreferrer" className="flex items-center px-4 py-2 hover:bg-gray-100 text-lg">
+              {isTotaServices && item.href.startsWith('/')
+                ? <img src={item.icon} alt={item.label} className="mr-2" width="16" height="16" />
+                : <img src={`https://www.google.com/s2/favicons?domain=${new URL(item.href).hostname}`} alt="favicon" width="16" height="16" className="mr-2" />
+              }
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    );
   };
 
   return (
@@ -80,9 +97,6 @@ const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
                 ? <span className='rotate-up'>❱</span>
                 : <span className='rotate-down'>❱</span>}
             </button>
-          </li>
-          <li className="hidden md:block">
-            <a href="https://www.silktv.ge/?page=silktv" target="_blank" className="block px-4 py-2 text-blue-800 text-lg pr-4 md:text-base">{t('tv_channels')}</a>
           </li>
         </ul>
       </nav>
@@ -132,7 +146,7 @@ const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
                   <a href={item.href} target="_blank" rel="noopener noreferrer" className="flex items-center px-4 py-4 hover:bg-gray-100 text-2xl">
                     {activeMobileCategory === 'tota_services' && item.href.startsWith('/')
                       ? <img src={item.icon} alt={item.label} className="mr-2" width="24" height="24" />
-                      : <DropdownFavicon href={item.href} width="24" height="24" className="mr-2" />
+                      : <img src={`https://www.google.com/s2/favicons?domain=${new URL(item.href).hostname}`} alt="favicon" width="24" height="24" className="mr-2" />
                     }
                     {item.label}
                   </a>
@@ -166,24 +180,6 @@ const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
         </div>
       )}
     </div>
-  );
-};
-
-const DropdownContent = ({ t, items, isTotaServices }) => {
-  return (
-    <ul className="p-2 space-y-2">
-      {items.map((item) => (
-        <li key={item.href} className="p-2">
-          <a href={item.href} target="_blank" rel="noopener noreferrer" className="flex items-center px-4 py-2 hover:bg-gray-100 text-lg">
-            {isTotaServices && item.href.startsWith('/')
-              ? <img src={item.icon} alt={item.label} className="mr-2" width="16" height="16" />
-              : <DropdownFavicon href={item.href} width="16" height="16" className="mr-2" />
-            }
-            {item.label}
-          </a>
-        </li>
-      ))}
-    </ul>
   );
 };
 

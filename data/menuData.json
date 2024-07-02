@@ -2,7 +2,7 @@
     "tota_services": {
         "translationKey": "tota_services",
         "items": [
-          { "href": "/totatests", "label": "TotaTests", "icon": "/totatests/icon.png" },
+          { "href": "/totatests", "label": "TotaTests", "icon": "/TotaTests/icon.png" },
           { "href": "/totafines", "label": "TotaFines", "icon": "/totafines/icon.png" },
           { "href": "/totabusroutes", "label": "TotaBusRoutes", "icon": "/totabusroutes/icon.png" },
           { "href": "/totaparking", "label": "TotaParking", "icon": "/totaparking/icon.png" },
@@ -115,6 +115,12 @@
             { "href": "https://credobank.ge", "label": "CREDO" }
         ]
     },
+    "sport": {
+        "translationKey": "sport",
+        "items": [
+            { "href": "https://sprenty.com/", "label": "Splenty" }
+        ]
+    },
     "recipes": {
         "translationKey": "recipes",
         "items": [
@@ -180,7 +186,8 @@
     "tv_channels": {
         "translationKey": "tv_channels",
         "items": [
-            { "href": "https://myvideo.ge/c/livetv", "label": "TV არხები" }
+            { "href": "https://myvideo.ge/c/livetv", "label": "MyVideo TV" },
+            { "href": "https://www.silktv.ge/?page=silktv", "label": "Silk TV" }
         ]
     }
 }

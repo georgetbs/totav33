@@ -234,7 +234,9 @@ const HourlyForecast = ({
                 {Object.keys(groupedForecast).map((day, index) => {
                     const date = new Date(day);
                     const weekday = i18n.language === 'ka' ? getGeorgianWeekday(date.getUTCDay()) : date.toLocaleString(i18n.language, { weekday: 'long' });
-                    const dayMonth = `${date.getUTCDate()} ${i18n.language === 'ka' ? getGeorgianMonth(date.getUTCMonth()) : date.toLocaleString(i18n.language, { month: 'long' })}`;
+                    const dayMonth = i18n.language === 'ka' 
+    ? `${date.getUTCDate()} ${getGeorgianMonth(date.getUTCMonth())}`
+    : date.toLocaleString(i18n.language, { day: 'numeric', month: 'long' });
                     return (
                         <button
                             key={index}
@@ -306,7 +308,9 @@ const DailyForecast = ({
                 {Object.keys(groupedForecast).map((day, index) => {
                     const date = new Date(day);
                     const weekday = i18n.language === 'ka' ? getGeorgianWeekday(date.getUTCDay()) : date.toLocaleString(i18n.language, { weekday: 'long' });
-                    const dayMonth = `${date.getUTCDate()} ${i18n.language === 'ka' ? getGeorgianMonth(date.getUTCMonth()) : date.toLocaleString(i18n.language, { month: 'long' })}`;
+                    const dayMonth = i18n.language === 'ka' 
+    ? `${date.getUTCDate()} ${getGeorgianMonth(date.getUTCMonth())}`
+    : date.toLocaleString(i18n.language, { day: 'numeric', month: 'long' });
                     const items = groupedForecast[day]['d'];
                     if (items.length === 0) return null;
                     const temperature = calculateMaxTemperature(items);
