@@ -3,7 +3,7 @@ import parse, { domToReact } from 'html-react-parser';
 import { useTranslation } from 'next-i18next';
 import { FaHeart, FaShareAlt, FaYoutube, FaTwitch, FaVideo, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import YouTube from 'react-youtube';
-import { TwitchPlayer } from 'react-twitch-embed';
+import { TwitchEmbedVideo } from 'react-twitch-embed';
 
 const FeedLinks = ({ newsItems }) => {
   const { t } = useTranslation('common');
@@ -51,7 +51,7 @@ const FeedLinks = ({ newsItems }) => {
   }, [selectedNews]);
 
   const handleNewsClick = (index) => {
-    setSelectedNews(newsItems[index]);
+    setSelectedNews(filteredNewsItems[index]);
     setCurrentPostIndex(index);
   };
 
@@ -242,8 +242,8 @@ const FeedLinks = ({ newsItems }) => {
       <div className="flex justify-between absolute top-0 left-0 right-0 px-4 py-2">
         <button
           onClick={() => {
-            const newIndex = (currentPostIndex - 1 + newsItems.length) % newsItems.length;
-            setSelectedNews(newsItems[newIndex]);
+            const newIndex = (currentPostIndex - 1 + filteredNewsItems.length) % filteredNewsItems.length;
+            setSelectedNews(filteredNewsItems[newIndex]);
             setCurrentPostIndex(newIndex);
           }}
           className="text-white text-2xl"
@@ -252,8 +252,8 @@ const FeedLinks = ({ newsItems }) => {
         </button>
         <button
           onClick={() => {
-            const newIndex = (currentPostIndex + 1) % newsItems.length;
-            setSelectedNews(newsItems[newIndex]);
+            const newIndex = (currentPostIndex + 1) % filteredNewsItems.length;
+            setSelectedNews(filteredNewsItems[newIndex]);
             setCurrentPostIndex(newIndex);
           }}
           className="text-white text-2xl"
@@ -265,20 +265,25 @@ const FeedLinks = ({ newsItems }) => {
   };
 
   const filterNewsItems = (items) => {
-    return items.filter(news => {
-      // Exclude posts where the channel name contains "pinned"
-      if (news.channelName.toLowerCase().includes('pinned')) {
-        return false;
-      }
+    return items
+      .map((news, index) => ({
+        ...news,
+        originalIndex: index,
+      }))
+      .filter(news => {
+        // Exclude posts where the channel name contains "pinned"
+        if (news.channelName.toLowerCase().includes('pinned')) {
+          return false;
+        }
 
-      // Exclude posts with less than 100 characters of text without links if they have no images or videos
-      const textContent = stripHtml(news.titleHtml);
-      if (textContent.length < 100 && (!news.images || news.images.length === 0) && (!news.videos || news.videos.length === 0)) {
-        return false;
-      }
+        // Exclude posts with less than 100 characters of text without links if they have no images or videos
+        const textContent = stripHtml(news.titleHtml);
+        if (textContent.length < 100 && (!news.images || news.images.length === 0) && (!news.videos || news.videos.length === 0)) {
+          return false;
+        }
 
-      return true;
-    });
+        return true;
+      });
   };
 
   const filteredNewsItems = filterNewsItems(newsItems);
@@ -390,8 +395,8 @@ const FeedLinks = ({ newsItems }) => {
 
             {selectedNews.link.includes('twitch.tv') && isTwitchVideoUrl(selectedNews.link) && (
               <div className="relative w-full aspect-video max-h-[90vh] overflow-hidden rounded-3xl">
-                <TwitchPlayer
-                  channel={renderTwitchPlayer(selectedNews.link)}
+                <TwitchEmbedVideo
+                  video={renderTwitchPlayer(selectedNews.link)}
                   width="100%"
                   height="100%"
                   className="absolute top-0 left-0"
