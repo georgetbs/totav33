@@ -294,7 +294,7 @@ const FeedLinks = ({ newsItems }) => {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 px-4 pb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 px-2 pb-2">
         {filteredNewsItems.map((news, index) => {
           const { contentWithVideo, videoUrls } = parseContent(news.titleHtml);
           const hasYouTube = videoUrls.some(url => isYouTubeVideoUrl(url));

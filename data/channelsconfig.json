@@ -48,16 +48,11 @@
               "tags": ["News", "Lifestyle", "Events"]
           },
           {
-              "url": "https://t.me/s/valuestate",
-              "name": "Value State",
-              "feed_id": "valuestate",
-              "tags": ["Economics", "Finance"]
-          },
-          {
-              "url": "https://t.me/s/bitcoinquestchannel",
-              "name": "Bitcoin Quest Channel",
-              "feed_id": "bitcoinquestchannel",
-              "tags": ["Crypto", "Finance"]
+            "url": "https://t.me/s/nlevshitstelegram",
+            "name": "Николай Левшиц - канал о Грузии",
+            "feed_id": "levshits",
+            "tags": ["News", "Lifestyle", "Events"]
+
           },
           {
               "url": "https://t.me/s/paperkartuli",
@@ -70,6 +65,12 @@
               "name": "SOVA.News — Всё о Грузии",
               "feed_id": "sova_georgia",
               "tags": ["News", "Politics"]
+          },
+          {
+            "url": "https://t.me/s/NGnewsgeorgia",
+            "name": "NEWSGEORGIA / Новости – Грузия",
+            "feed_id": "NGnewsgeorgia",
+            "tags": ["News", "Politics"]
           }
       ]
   }

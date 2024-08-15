@@ -2,13 +2,7 @@
     "tota_services": {
         "translationKey": "tota_services",
         "items": [
-          { "href": "/totatests", "label": "TotaTests", "icon": "/TotaTests/icon.png" },
-          { "href": "/totafines", "label": "TotaFines", "icon": "/totafines/icon.png" },
-          { "href": "/totabusroutes", "label": "TotaBusRoutes", "icon": "/totabusroutes/icon.png" },
-          { "href": "/totaparking", "label": "TotaParking", "icon": "/totaparking/icon.png" },
-          { "href": "/totatransporttable", "label": "TotaTransportTable", "icon": "/totatransporttable/icon.png" },
-          { "href": "/totarecipts", "label": "TotaRecipts", "icon": "/totarecipts/icon.png" },
-          { "href": "/totadiscounts", "label": "TotaDiscounts", "icon": "/totadiscounts/icon.png" }
+          { "href": "/totatests", "label": "TotaTests", "icon": "/TotaTests/icon.png" }
         ]
       },
     "tickets": {

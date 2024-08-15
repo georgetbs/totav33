@@ -155,7 +155,7 @@ const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
             </ul>
           ) : (
             <ul className="list-none">
-              <li className="py-4">
+              <li>
                 <button
                   className="block w-full text-left px-4 py-4 hover:bg-gray-100 text-2xl text-green-800"
                   onClick={() => handleMobileCategoryClick('tota_services')}
@@ -165,7 +165,7 @@ const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
               </li>
               {Object.keys(menuData).map((category) => (
                 category !== 'tota_services' && (
-                  <li key={category} className="py-4">
+                  <li key={category}>
                     <button
                       className="block w-full text-left px-4 py-4 hover:bg-gray-100 text-2xl"
                       onClick={() => handleMobileCategoryClick(category)}

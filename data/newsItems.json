@@ -75,15 +75,6 @@
         "maxTitleLength": 95
       },
       {
-        "id": "sport",
-        "name": "Sports",
-        "sources": [],
-        "cacheKeys": [],
-        "filterSubstrings": ["” –", "“ –", "Astrological", "Currency rate", "”-"],
-        "maxNewsDisplay": 8,
-        "maxTitleLength": 95
-      },
-      {
         "id": "economics",
         "name": "Economics",
         "sources": ["/api/news/en/bm", "/api/news/en/imedi", "/api/news/en/gt"],
@@ -99,33 +90,6 @@
         "name": "Новости",
         "sources": ["/api/news/ru/1tv"],
         "cacheKeys": ["news1tvMainRu"],
-        "filterSubstrings": ["” –", "“ –", "Астрологический", "Курс валют", "”-"],
-        "maxNewsDisplay": 8,
-        "maxTitleLength": 95
-      },
-      {
-        "id": "politics",
-        "name": "Политика",
-        "sources": [],
-        "cacheKeys": [],
-        "filterSubstrings": ["” –", "“ –", "Астрологический", "Курс валют", "”-"],
-        "maxNewsDisplay": 8,
-        "maxTitleLength": 95
-      },
-      {
-        "id": "society",
-        "name": "Общество",
-        "sources": [],
-        "cacheKeys": [],
-        "filterSubstrings": ["” –", "“ –", "Астрологический", "Курс валют", "”-"],
-        "maxNewsDisplay": 8,
-        "maxTitleLength": 95
-      },
-      {
-        "id": "sport",
-        "name": "Спорт",
-        "sources": [],
-        "cacheKeys": [],
         "filterSubstrings": ["” –", "“ –", "Астрологический", "Курс валют", "”-"],
         "maxNewsDisplay": 8,
         "maxTitleLength": 95

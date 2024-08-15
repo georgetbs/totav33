@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 
 const languageFlags = {
-  ka: '',
-  en: '',
-  ru: '',
+  ka: '🇬🇪 ',
+  en: '🇬🇧 ',
+  ru: '🌐 ',
 };
 
 export default function LanguageSelector() {
@@ -47,21 +47,21 @@ export default function LanguageSelector() {
                 className={`block px-4 py-2 text-xl text-gray-700 w-full text-left ${language === 'ka' ? 'bg-gray-100' : ''}`}
                 role="menuitem"
               >
-                ქართული
+               🇬🇪 ქართული
               </button>
               <button
                 onClick={() => changeLanguage('en')}
                 className={`block px-4 py-2 text-xl text-gray-700 w-full text-left ${language === 'en' ? 'bg-gray-100' : ''}`}
                 role="menuitem"
               >
-                English
+               🇬🇧 English
               </button>
               <button
                 onClick={() => changeLanguage('ru')}
                 className={`block px-4 py-2 text-xl text-gray-700 w-full text-left ${language === 'ru' ? 'bg-gray-100' : ''}`}
                 role="menuitem"
               >
-                Русский
+               🌐 Русский
               </button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import SearchBar from '../../components/searchbar';
+import Script from 'next/script';
 
 const Header = () => {
   return (
@@ -16,9 +17,12 @@ const Header = () => {
           <SearchBar />
         </div>
       </div>
-      <div className="hidden m:flex flex-col w-1/4">
-        {/* Additional elements can be added here */}
-      </div>
+      <div className="hidden m:flex flex-col w-1/4  items-center justify-center">
+  {/* Additional elements can be added here */}
+  <div className='mr-28 mb-2' id="top-ge-counter-container" data-site-id="117540"></div>
+  <Script src="//counter.top.ge/counter.js" async />
+</div>
+
     </header>
   );
 };
