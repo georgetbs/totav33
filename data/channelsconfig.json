@@ -30,7 +30,13 @@
               "name": "No to Russian Law in Georgia",
               "feed_id": "noto_russian_law_in_georgia",
               "tags": ["Politics", "Activism"]
-          }
+          },
+          {
+            "url": "https://t.me/s/TbilisiFM935",
+            "name": "Radio Tbilisi FM93.5",
+            "feed_id": "radiotbilisifm935",
+            "tags": ["Politics", "Radio", "Culture", "Radio"]
+        }
       ],
       "en": [
           {
