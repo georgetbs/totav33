@@ -12,35 +12,33 @@ const NewsSection = () => {
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
   const [newsData, setNewsData] = useState({});
   const { t, i18n } = useTranslation('common');
-  const language = i18n.language || 'ka';
-  const [isLoading, setIsLoading] = useState(true);
+  const [language, setLanguage] = useState(i18n.language || 'ka');
+  const [loadingStatus, setLoadingStatus] = useState({});
   const menuRef = useRef(null);
   const menuItemRefs = useRef([]);
   const existingTitles = useRef(new Set());
 
   useEffect(() => {
-    setIsLoading(true);
-    const cachedData = {};
-    let allCached = true;
-    menuItems[language].forEach(item => {
+    if (language !== i18n.language) {
+      setLanguage(i18n.language);
+      setActiveMenuIndex(0); // Reset to "all" section when language changes
+    }
+  }, [i18n.language]);
+
+  useEffect(() => {
+    setLoadingStatus({});
+    setNewsData({});
+    menuItems[language].forEach((item, index) => {
       const cacheKey = `${CACHE_KEY_PREFIX}${language}_${item.id}`;
       const cache = JSON.parse(localStorage.getItem(cacheKey));
       if (cache && (Date.now() - cache.timestamp < CACHE_TIME_LIMIT)) {
-        cachedData[item.id] = cache.data;
+        setNewsData(prev => ({ ...prev, [item.id]: cache.data }));
+        setLoadingStatus(prev => ({ ...prev, [item.id]: { total: item.sources.length, loaded: item.sources.length } }));
       } else {
-        allCached = false;
+        setLoadingStatus(prev => ({ ...prev, [item.id]: { total: item.sources.length, loaded: 0 } }));
+        fetchNewsData(item);
       }
     });
-
-    if (allCached) {
-      setNewsData(cachedData);
-      setIsLoading(false);
-    } else {
-      fetchAllNewsData().then(data => {
-        setNewsData(data);
-        setIsLoading(false);
-      });
-    }
   }, [language]);
 
   useEffect(() => {
@@ -70,7 +68,7 @@ const NewsSection = () => {
           if (menuItemRefs.current[newIndex]) {
             setTimeout(() => {
               menuItemRefs.current[newIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            }, 100); // небольшая задержка для плавности
+            }, 100);
           }
           return newIndex;
         });
@@ -81,25 +79,21 @@ const NewsSection = () => {
     setStartY(null);
   };
 
-  const fetchAllNewsData = async () => {
-    const data = {};
-    const promises = menuItems[language].map(item =>
-      fetchNewsData(item).then(news => {
-        data[item.id] = news;
-        const cacheKey = `${CACHE_KEY_PREFIX}${language}_${item.id}`;
-        localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), data: news }));
-      })
-    );
-
-    await Promise.all(promises);
-    return data;
-  };
-
   const fetchNewsData = async (item) => {
     try {
-      const newsPromises = item.sources.map(source =>
-        fetch(source).then(res => res.json()).catch(err => {
+      const newsPromises = item.sources.map((source, index) =>
+        fetch(source).then(res => res.json()).then(data => {
+          setLoadingStatus(prev => ({
+            ...prev,
+            [item.id]: { ...prev[item.id], loaded: prev[item.id].loaded + 1 }
+          }));
+          return data;
+        }).catch(err => {
           console.error(`Error fetching from ${source}:`, err);
+          setLoadingStatus(prev => ({
+            ...prev,
+            [item.id]: { ...prev[item.id], loaded: prev[item.id].loaded + 1 }
+          }));
           return []; // Return empty array on error
         })
       );
@@ -116,10 +110,12 @@ const NewsSection = () => {
       combinedNews = combinedNews.filter(news => isTitleUnique(news.title));
       combinedNews = combinedNews.sort(() => Math.random() - 0.5).slice(0, item.maxNewsDisplay);
 
-      return combinedNews;
+      setNewsData(prev => ({ ...prev, [item.id]: combinedNews }));
+      const cacheKey = `${CACHE_KEY_PREFIX}${language}_${item.id}`;
+      localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), data: combinedNews }));
     } catch (error) {
       console.error('Error fetching aggregated news:', error);
-      return [];
+      setNewsData(prev => ({ ...prev, [item.id]: [] }));
     }
   };
 
@@ -152,24 +148,28 @@ const NewsSection = () => {
           ))}
         </ul>
       </nav>
-      {isLoading ? (
-        <div className="text-center">{t('loading')}</div>
-      ) : (
-        <div
-          className="news-content"
-          onTouchStart={updateSwipeStart}
-          onTouchEnd={executeSwipeEnd}
-        >
-          {menuItems[language]?.map((item, index) => (
-            <div
-              key={item.id}
-              className={`news-category ${index === activeMenuIndex ? 'block' : 'hidden'}`}
-            >
-              <NewsLinks newsItems={newsData[item.id] || []} />
-            </div>
-          ))}
-        </div>
-      )}
+      <div
+        className="news-content"
+        onTouchStart={updateSwipeStart}
+        onTouchEnd={executeSwipeEnd}
+      >
+        {menuItems[language]?.map((item, index) => (
+          <div
+            key={item.id}
+            className={`news-category ${index === activeMenuIndex ? 'block' : 'hidden'}`}
+          >
+            {loadingStatus[item.id]?.loaded < loadingStatus[item.id]?.total ? (
+              <div className="text-center">
+                {t('loading')} {loadingStatus[item.id]?.loaded} / {loadingStatus[item.id]?.total} {t('sources')}
+              </div>
+            ) : newsData[item.id] ? (
+              <NewsLinks newsItems={newsData[item.id]} />
+            ) : (
+              <div className="text-center">{t('noNewsAvailable')}</div>
+            )}
+          </div>
+        ))}
+      </div>
     </section>
   );
 };
