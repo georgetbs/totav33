@@ -28,7 +28,17 @@ const NewsSection = () => {
   useEffect(() => {
     setLoadingStatus({});
     setNewsData({});
-    menuItems[language].forEach((item, index) => {
+    const menuData = menuItems[language];
+
+    if (!menuData || menuData.length === 0) {
+      setActiveMenuIndex(0);
+    } else if (menuData[activeMenuIndex] === undefined) {
+      // Проверка на случай, если активной секции нет
+      const allSectionIndex = menuData.findIndex(item => item.id === 'all');
+      setActiveMenuIndex(allSectionIndex !== -1 ? allSectionIndex : 0);
+    }
+
+    menuData.forEach((item, index) => {
       const cacheKey = `${CACHE_KEY_PREFIX}${language}_${item.id}`;
       const cache = JSON.parse(localStorage.getItem(cacheKey));
       if (cache && (Date.now() - cache.timestamp < CACHE_TIME_LIMIT)) {
