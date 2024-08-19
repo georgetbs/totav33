@@ -11,9 +11,9 @@ const NewsSection = () => {
   const [startY, setStartY] = useState(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
   const [newsData, setNewsData] = useState({});
+  const [isInitialLoading, setIsInitialLoading] = useState(true); // Флаг для скрытия сообщения о недоступности новостей в первые 10 секунд
   const { t, i18n } = useTranslation('common');
   const [language, setLanguage] = useState(i18n.language || 'ka');
-  const [loadingStatus, setLoadingStatus] = useState({});
   const menuRef = useRef(null);
   const menuItemRefs = useRef([]);
   const existingTitles = useRef(new Set());
@@ -26,29 +26,32 @@ const NewsSection = () => {
   }, [i18n.language]);
 
   useEffect(() => {
-    setLoadingStatus({});
     setNewsData({});
+    setIsInitialLoading(true); // Устанавливаем начальное состояние загрузки
     const menuData = menuItems[language];
 
     if (!menuData || menuData.length === 0) {
       setActiveMenuIndex(0);
     } else if (menuData[activeMenuIndex] === undefined) {
-      // Проверка на случай, если активной секции нет
       const allSectionIndex = menuData.findIndex(item => item.id === 'all');
       setActiveMenuIndex(allSectionIndex !== -1 ? allSectionIndex : 0);
     }
+
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false); // После 10 секунд отключаем флаг
+    }, 10000); // 10 секунд
 
     menuData.forEach((item, index) => {
       const cacheKey = `${CACHE_KEY_PREFIX}${language}_${item.id}`;
       const cache = JSON.parse(localStorage.getItem(cacheKey));
       if (cache && (Date.now() - cache.timestamp < CACHE_TIME_LIMIT)) {
         setNewsData(prev => ({ ...prev, [item.id]: cache.data }));
-        setLoadingStatus(prev => ({ ...prev, [item.id]: { total: item.sources.length, loaded: item.sources.length } }));
       } else {
-        setLoadingStatus(prev => ({ ...prev, [item.id]: { total: item.sources.length, loaded: 0 } }));
         fetchNewsData(item);
       }
     });
+
+    return () => clearTimeout(timer); // Очистка таймера при размонтировании компонента
   }, [language]);
 
   useEffect(() => {
@@ -91,19 +94,9 @@ const NewsSection = () => {
 
   const fetchNewsData = async (item) => {
     try {
-      const newsPromises = item.sources.map((source, index) =>
-        fetch(source).then(res => res.json()).then(data => {
-          setLoadingStatus(prev => ({
-            ...prev,
-            [item.id]: { ...prev[item.id], loaded: prev[item.id].loaded + 1 }
-          }));
-          return data;
-        }).catch(err => {
+      const newsPromises = item.sources.map(source =>
+        fetch(source).then(res => res.json()).then(data => data).catch(err => {
           console.error(`Error fetching from ${source}:`, err);
-          setLoadingStatus(prev => ({
-            ...prev,
-            [item.id]: { ...prev[item.id], loaded: prev[item.id].loaded + 1 }
-          }));
           return []; // Return empty array on error
         })
       );
@@ -168,15 +161,11 @@ const NewsSection = () => {
             key={item.id}
             className={`news-category ${index === activeMenuIndex ? 'block' : 'hidden'}`}
           >
-            {loadingStatus[item.id]?.loaded < loadingStatus[item.id]?.total ? (
-              <div className="text-center">
-                {t('loading')} {loadingStatus[item.id]?.loaded} / {loadingStatus[item.id]?.total} {t('sources')}
-              </div>
-            ) : newsData[item.id] ? (
+            {newsData[item.id] && newsData[item.id].length > 0 ? (
               <NewsLinks newsItems={newsData[item.id]} />
-            ) : (
+            ) : !isInitialLoading ? ( // Проверяем флаг перед отображением сообщения о недоступности новостей
               <div className="text-center">{t('noNewsAvailable')}</div>
-            )}
+            ) : null}
           </div>
         ))}
       </div>

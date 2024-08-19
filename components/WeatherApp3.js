@@ -105,25 +105,15 @@ const WeatherInfo = ({
     }
 
     return (
-        <div className="bg-white p-4 rounded-lg border shadow-md hover:shadow-lg transition-shadow flex flex-col items-center cursor-pointer max-m:p-2" onClick={toggleFullForecastVisibility}>
-            <div className="weather-widget-header flex items-center justify-center">
-                <button className="citynamebutton bg-transparent border-none cursor-pointer hover:text-green-800" onClick={(e) => { e.stopPropagation(); toggleMenuVisibility(); }}>
-                    <p className="city text-xl font-semibold max-m:text-lg">{cityName}</p>
-                </button>
-            </div>
-            <div className="weather-widget-body flex flex-col items-center justify-center gap-2 cursor-pointer">
-                <p className="temperature text-2xl font-bold max-m:text-xl">{Math.round(main.temp)}°C</p>
-                <img src={`https://openweathermap.org/img/wn/${weather[0].icon}.png`} alt={description} className="weather-icon w-10 h-10 max-m:w-8 max-m:h-8" />
-                <p className="description text-sm text-gray-600 max-m:text-xs">{description}</p>
-            </div>
-            <div className="weather-widget-bottom flex justify-center gap-2 mt-2 max-m:mt-1">
-                <p className="feels-like text-sm text-gray-600 max-m:text-xs">{t('feels_like')}: {Math.round(main.feels_like)}°C</p>
-                <p className="wind text-sm text-gray-600 max-m:text-xs">{wind.speed} {t('ms')}</p>
-            </div>
-            <button className="expand-button text-green-800 text-xl mt-2 max-m:mt-1 max-m:text-lg flex items-center">
-                🔍 <span className="ml-1">{t('more_details')}</span>
-            </button>
-        </div>
+        <div className="bg-white px-2  rounded-lg hover:shadow-lg transition-shadow flex items-center cursor-pointer max-m:p-2" onClick={toggleFullForecastVisibility}>
+        <button className="citynamebutton bg-transparent border-none cursor-pointer hover:text-green-800 mr-4" onClick={(e) => { e.stopPropagation(); toggleMenuVisibility(); }}>
+          <p className="city text-sm font-semibold text-[#15075d] hover:text-green-800">{cityName}</p>
+        </button>
+        <img src={`https://openweathermap.org/img/wn/${weather[0].icon}.png`} alt={description} className="weather-icon w-14 h-14 max-m:w-10 max-m:h-10 mr-2" />
+        <p className="temperature text-sm font-bold text-[#15075d]">{Math.round(main.temp)}°C</p>
+      </div>
+      
+      
     );
 };
 
@@ -170,7 +160,7 @@ const PartOfDayForecast = ({
     }
 
     return (
-        <div className="part-of-day-forecast-container mt-4 hidden xl:flex gap-2 cursor-pointer" onClick={toggleFullForecastVisibility}>
+        <div className="part-of-day-forecast-container mt-4 hidden gap-2 cursor-pointer" onClick={toggleFullForecastVisibility}>
             {partOfDayForecastItems.slice(0, 3).map((item, index) => {
                 const timeOfDay = getTimeOfDay(item.customPod);
                 const temperature = Math.round(item.main.temp);
