@@ -1,34 +1,41 @@
 import React from 'react';
 import SearchBar from '../../components/searchbar';
-import Script from 'next/script';
 import CurrencyInfo from '@/components/CurrencyInfo';
 import WeatherApp3 from '@/components/WeatherApp3';
 
 const Header = () => {
   return (
-    <header className="flex max-m:flex-col max-m:w-full justify-center gap-4 px-5 py-3">
-      <div className="flex flex-col md:max-w-[400px] max-m:flex-row max-m:justify-center max-m:gap-1 items-center max-m:w-full w-1/4 max-w-s">
-        <img 
-          src="/logo21.png" 
-          alt="Logo" 
-          className="w-[225px] h-[85px]" 
-        />
+    <header className="flex flex-col md:flex-row justify-center gap-4 px-5 py-3 items-start">
+      <div className="flex flex-col items-center text-center w-full md:w-1/4">
+        <h1
+          className="text-[55px] sm:text-[55px] md:text-[55px] xl:text-[65px] text-green-700 font-medium leading-none"
+          style={{
+            fontFamily: 'SF Compact Rounded',
+          }}
+        >
+          TOTA.GE
+          <span
+            className="block text-[13px] sm:text-[13px] md:text-[13px] xl:text-[13px] font-extrabold mt-[5px] sm:mt-[7px] md:mt-[8px] text-red-500"
+            style={{
+              fontFamily: 'Noto Sans Georgian SemiCondensed',
+            }}
+          >
+            მთელი საქართველო ერთ სივრცეში
+          </span>
+        </h1>
       </div>
-      <div className="flex flex-1 items-center w-1/2 max-m:w-full max-w-3xl">
-        <div className="w-full mt-2">
+      <div className="flex flex-1 items-center w-full md:w-1/2 max-w-3xl mt-2">
+        <div className="w-full">
           <SearchBar />
-          <div className="flex md:flex-row max-m:flex-col gap-2 justify-center items-center mt-1 max-w-1/2">
+          <div className="flex md:flex-row flex-col gap-2 justify-center items-center mt-1">
             <WeatherApp3 />
-           <div className='-mb-10'></div>
-             <CurrencyInfo />
-            </div>
-
+            <div className="-mb-10"></div>
+            <CurrencyInfo />
+          </div>
         </div>
       </div>
-      <div className="hidden m:flex flex-col w-1/4  items-center justify-center">
-        {/* Additional elements can be added here */}
-        <div className='mr-28 -mt-8' id="top-ge-counter-container" data-site-id="117540"></div>
-        <Script src="//counter.top.ge/counter.js" async />
+      <div className="hidden md:flex flex-col w-1/4 items-center justify-center">
+        {/* Дополнительные элементы */}
       </div>
     </header>
   );

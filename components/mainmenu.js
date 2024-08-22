@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useTranslation } from 'next-i18next';
 import menuData from '../data/menuData.json';
 
-const desktopMenuCategories = ['tota_services', 'tickets', 'real_estate', 'stores', 'pharmacies', 'jobs', 'auto', 'handymen', 'school', 'tv_channels'];
+const desktopMenuCategories = ['tota_services', 'tickets', 'real_estate', 'stores', 'pharmacies', 'jobs', 'auto', 'handymen', 'government', 'tv_channels'];
 
 const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
   const { t } = useTranslation('common');
@@ -57,7 +57,7 @@ const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
   return (
     <div ref={scrollableRef}>
       <nav className="main-menu w-full max-w-8xl mx-auto bg-white text-black font-sans relative">
-        <ul className="flex flex-wrap justify-start p-0 m-0 list-none space-x-2">
+        <ul className="flex flex-wrap justify-start p-0 m-0 list-none space-x-1">
           <li className="block md:hidden relative">
             <button
               id="toggle-menu-mobile"
@@ -75,7 +75,7 @@ const MainMenu = ({ areMenusVisible, toggleMenuVisibility }) => {
               onMouseEnter={() => handleMouseEnter(category)}
               onMouseLeave={handleMouseLeave}
             >
-              <a href="#" className={`block px-4 py-2 text-lg md:text-base ${category === 'tota_services' ? 'text-green-800' : ''}`}>
+              <a href="#" className={`block px-2 py-2 text-lg md:text-base ${category === 'tota_services' ? 'text-green-800' : ''}`}>
                 {t(menuData[category].translationKey)}
               </a>
               {activeDropdown === category && (

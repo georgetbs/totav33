@@ -11,7 +11,7 @@ const NewsSection = () => {
   const [startY, setStartY] = useState(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
   const [newsData, setNewsData] = useState({});
-  const [isInitialLoading, setIsInitialLoading] = useState(true); // Флаг для скрытия сообщения о недоступности новостей в первые 10 секунд
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const { t, i18n } = useTranslation('common');
   const [language, setLanguage] = useState(i18n.language || 'ka');
   const menuRef = useRef(null);
@@ -27,7 +27,7 @@ const NewsSection = () => {
 
   useEffect(() => {
     setNewsData({});
-    setIsInitialLoading(true); // Устанавливаем начальное состояние загрузки
+    setIsInitialLoading(true);
     const menuData = menuItems[language];
 
     if (!menuData || menuData.length === 0) {
@@ -38,10 +38,10 @@ const NewsSection = () => {
     }
 
     const timer = setTimeout(() => {
-      setIsInitialLoading(false); // После 10 секунд отключаем флаг
+      setIsInitialLoading(false);
     }, 10000); // 10 секунд
 
-    menuData.forEach((item, index) => {
+    menuData.forEach((item) => {
       const cacheKey = `${CACHE_KEY_PREFIX}${language}_${item.id}`;
       const cache = JSON.parse(localStorage.getItem(cacheKey));
       if (cache && (Date.now() - cache.timestamp < CACHE_TIME_LIMIT)) {
@@ -51,7 +51,7 @@ const NewsSection = () => {
       }
     });
 
-    return () => clearTimeout(timer); // Очистка таймера при размонтировании компонента
+    return () => clearTimeout(timer);
   }, [language]);
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const NewsSection = () => {
       const newsPromises = item.sources.map(source =>
         fetch(source).then(res => res.json()).then(data => data).catch(err => {
           console.error(`Error fetching from ${source}:`, err);
-          return []; // Return empty array on error
+          return [];
         })
       );
 
@@ -144,9 +144,12 @@ const NewsSection = () => {
         <ul className="flex p-0 m-0 whitespace-nowrap list-none">
           {menuItems[language]?.map((item, index) => (
             <li key={item.id} className="inline-block mr-2 overflow-hidden text-ellipsis shrink-0" ref={el => menuItemRefs.current[index] = el}>
-              <a href="#" className={`block px-2 py-1 rounded transition text-lg ${index === activeMenuIndex ? 'bg-blue-100 text-blue-900 active' : 'bg-gray-200 text-gray-700'}`} onClick={() => handleMenuClick(index)}>
+              <h2
+                className={`block px-2 py-1 rounded transition text-lg cursor-pointer ${index === activeMenuIndex ? 'bg-blue-100 text-blue-900 active' : 'bg-gray-200 text-gray-700'}`}
+                onClick={() => handleMenuClick(index)}
+              >
                 {t(item.name)}
-              </a>
+              </h2>
             </li>
           ))}
         </ul>
@@ -163,7 +166,7 @@ const NewsSection = () => {
           >
             {newsData[item.id] && newsData[item.id].length > 0 ? (
               <NewsLinks newsItems={newsData[item.id]} />
-            ) : !isInitialLoading ? ( // Проверяем флаг перед отображением сообщения о недоступности новостей
+            ) : !isInitialLoading ? (
               <div className="text-center">{t('noNewsAvailable')}</div>
             ) : null}
           </div>

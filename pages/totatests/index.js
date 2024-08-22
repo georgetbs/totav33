@@ -31,7 +31,7 @@ export default function Home() {
       </main>
      
     </div>
-     <Footer />
+    <Footer />
      </>
   );
 }

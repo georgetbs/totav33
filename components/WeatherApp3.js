@@ -105,15 +105,13 @@ const WeatherInfo = ({
     }
 
     return (
-        <div className="bg-white px-2  rounded-lg hover:shadow-lg transition-shadow flex items-center cursor-pointer max-m:p-2" onClick={toggleFullForecastVisibility}>
-        <button className="citynamebutton bg-transparent border-none cursor-pointer hover:text-green-800 mr-4" onClick={(e) => { e.stopPropagation(); toggleMenuVisibility(); }}>
-          <p className="city text-sm font-semibold text-[#15075d] hover:text-green-800">{cityName}</p>
-        </button>
-        <img src={`https://openweathermap.org/img/wn/${weather[0].icon}.png`} alt={description} className="weather-icon w-14 h-14 max-m:w-10 max-m:h-10 mr-2" />
-        <p className="temperature text-sm font-bold text-[#15075d]">{Math.round(main.temp)}°C</p>
-      </div>
-      
-      
+        <div className="bg-white px-2 rounded-lg hover:shadow-lg transition-shadow flex items-center cursor-pointer max-m:p-2" onClick={toggleFullForecastVisibility}>
+            <button className="citynamebutton bg-transparent border-none cursor-pointer hover:text-green-800 mr-4" onClick={(e) => { e.stopPropagation(); toggleMenuVisibility(); }}>
+                <p className="city text-sm font-semibold text-[#15075d] hover:text-green-800">{cityName}</p>
+            </button>
+            <img src={`https://openweathermap.org/img/wn/${weather[0].icon}.png`} alt={description} className="weather-icon w-14 h-14 max-m:w-10 max-m:h-10 mr-2" />
+            <p className="temperature text-sm font-bold text-[#15075d]">{Math.round(main.temp)}°C</p>
+        </div>
     );
 };
 
@@ -150,7 +148,7 @@ const PartOfDayForecast = ({
             }
 
             if (items.length > 0 && !addedPeriods.has(pod)) {
-                partOfDayForecastItems.push({...items[0], customPod: pod});
+                partOfDayForecastItems.push({ ...items[0], customPod: pod });
                 addedPeriods.add(pod);
             }
 
@@ -201,8 +199,9 @@ const HourlyForecast = ({
     };
 
     const groupedForecast = groupForecastByDayAndTime(forecastData.list, weatherData.timezone);
-    const filteredForecastItems = groupedForecast[selectedDay] ?
-        groupedForecast[selectedDay].fn.concat(groupedForecast[selectedDay].m, groupedForecast[selectedDay].d, groupedForecast[selectedDay].e) : [];
+    const filteredForecastItems = groupedForecast[selectedDay]
+        ? groupedForecast[selectedDay].fn.concat(groupedForecast[selectedDay].m, groupedForecast[selectedDay].d, groupedForecast[selectedDay].e)
+        : [];
 
     const validForecastItems = removeInvalidForecasts(filteredForecastItems);
 
@@ -219,14 +218,14 @@ const HourlyForecast = ({
     };
 
     return (
-        <div className="hourly-forecast bg-white p-4 rounded-lg max-w-full mx-auto overflow-x-auto max-m:p-2">
+        <div className="hourly-forecast bg-white p-4 rounded-lg max-w-full min-w-full mx-auto overflow-x-auto max-m:p-2">
             <div className="tabs flex flex-row space-x-2 mb-4 overflow-x-auto">
                 {Object.keys(groupedForecast).map((day, index) => {
                     const date = new Date(day);
                     const weekday = i18n.language === 'ka' ? getGeorgianWeekday(date.getUTCDay()) : date.toLocaleString(i18n.language, { weekday: 'long' });
-                    const dayMonth = i18n.language === 'ka' 
-    ? `${date.getUTCDate()} ${getGeorgianMonth(date.getUTCMonth())}`
-    : date.toLocaleString(i18n.language, { day: 'numeric', month: 'long' });
+                    const dayMonth = i18n.language === 'ka'
+                        ? `${date.getUTCDate()} ${getGeorgianMonth(date.getUTCMonth())}`
+                        : date.toLocaleString(i18n.language, { day: 'numeric', month: 'long' });
                     return (
                         <button
                             key={index}
@@ -238,31 +237,30 @@ const HourlyForecast = ({
                     );
                 })}
             </div>
-            <div className="weather-container flex gap-4 overflow-x-auto">
-                {sortedForecastItems
-                    .map((item, idx) => {
-                        const forecastTime = new Date((item.dt + weatherData.timezone - 3600) * 1000);
-                        const hours = forecastTime.getUTCHours();
-                        const time = `${hours.toString().padStart(2, '0')}:00`;
-                        const temperature = Math.round(item.main.temp);
-                        const icon = item.weather[0].icon;
-                        let description;
-                        if (i18n.language === 'ru') {
-                            description = descriptionTranslationsRu[item.weather[0].description] || item.weather[0].description;
-                        } else if (i18n.language === 'en') {
-                            description = item.weather[0].description;
-                        } else {
-                            description = descriptionTranslations[item.weather[0].description] || item.weather[0].description;
-                        }
-                        return (
-                            <div key={idx} className="hour-forecast-item border rounded-lg p-2 flex-shrink-0 bg-white flex flex-col items-center gap-2 max-m:p-1">
-                                <p className="time font-semibold max-m:text-xs">{time}</p>
-                                <img src={`https://openweathermap.org/img/wn/${icon}.png`} alt={description} className="weather-icon w-8 h-8 max-m:w-6 max-m:h-6" />
-                                <p className="max-m:text-xs">{temperature}°C</p>
-                                <p className="max-m:text-xs">{description}</p>
-                            </div>
-                        );
-                    })}
+            <div className="weather-container grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-y-auto max-h-[80vh]">
+                {sortedForecastItems.map((item, idx) => {
+                    const forecastTime = new Date((item.dt + weatherData.timezone - 3600) * 1000);
+                    const hours = forecastTime.getUTCHours();
+                    const time = `${hours.toString().padStart(2, '0')}:00`;
+                    const temperature = Math.round(item.main.temp);
+                    const icon = item.weather[0].icon;
+                    let description;
+                    if (i18n.language === 'ru') {
+                        description = descriptionTranslationsRu[item.weather[0].description] || item.weather[0].description;
+                    } else if (i18n.language === 'en') {
+                        description = item.weather[0].description;
+                    } else {
+                        description = descriptionTranslations[item.weather[0].description] || item.weather[0].description;
+                    }
+                    return (
+                        <div key={idx} className="hour-forecast-item border rounded-lg p-2 bg-blue-200 flex flex-col items-center gap-2 max-m:p-1">
+                            <p className="time font-semibold max-m:text-xs">{time}</p>
+                            <img src={`https://openweathermap.org/img/wn/${icon}.png`} alt={description} className="weather-icon w-8 h-8 max-m:w-6 max-m:h-6" />
+                            <p className="max-m:text-xs">{temperature}°C</p>
+                            <p className="max-m:text-xs text-center">{description}</p>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
@@ -293,23 +291,25 @@ const DailyForecast = ({
     const groupedForecast = groupForecastByDayAndTime(forecastData.list, weatherData.timezone);
 
     return (
-        <div className="daily-forecast bg-white p-4 rounded-lg max-w-full mx-auto overflow-x-auto max-m:p-2">
-            <div className="weather-container flex gap-4 mt-4 overflow-x-auto">
+        <div className="daily-forecast bg-white p-4 rounded-lg max-w-full min-w-full mx-auto overflow-x-auto max-m:p-2">
+            <div className="weather-container grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 overflow-y-auto max-h-[80vh]">
                 {Object.keys(groupedForecast).map((day, index) => {
                     const date = new Date(day);
                     const weekday = i18n.language === 'ka' ? getGeorgianWeekday(date.getUTCDay()) : date.toLocaleString(i18n.language, { weekday: 'long' });
-                    const dayMonth = i18n.language === 'ka' 
-    ? `${date.getUTCDate()} ${getGeorgianMonth(date.getUTCMonth())}`
-    : date.toLocaleString(i18n.language, { day: 'numeric', month: 'long' });
+                    const dayMonth = i18n.language === 'ka'
+                        ? `${date.getUTCDate()} ${getGeorgianMonth(date.getUTCMonth())}`
+                        : date.toLocaleString(i18n.language, { day: 'numeric', month: 'long' });
                     const items = groupedForecast[day]['d'];
                     if (items.length === 0) return null;
                     const temperature = calculateMaxTemperature(items);
                     const icon = items[0].weather[0].icon;
 
                     return (
-                        <div key={index} className="day-forecast border rounded-lg p-2 flex-shrink-0 bg-white max-m:p-1">
-                            <p className="date font-semibold break-all text-center max-m:text-xs">{weekday},<br />{dayMonth}</p>
-                            <div className="forecast-item flex flex-col items-center gap-2 p-2 bg-white rounded-lg mb-2 max-m:mb-1">
+                        <div key={index} className="day-forecast rounded-lg p-2 bg-blue-200 flex-shrink-0 max-m:p-1">
+                            <p className="date font-semibold break-all text-center max-m:text-xs">
+                                {weekday},<br />{dayMonth}
+                            </p>
+                            <div className="forecast-item flex flex-col items-center gap-2 p-2 bg-blue-200 rounded-lg mb-2 max-m:mb-1">
                                 <img src={`https://openweathermap.org/img/wn/${icon}.png`} alt="Weather Icon" className="weather-icon w-8 h-8 max-m:w-6 max-m:h-6" />
                                 <p className="max-m:text-xs">{temperature}°C</p>
                             </div>
@@ -363,7 +363,7 @@ const FullForecast = ({
     const partsOfDayOrder = ['fn', 'm', 'd', 'e'];
 
     return (
-        <div className="full-forecast bg-white p-4 rounded-lg max-w-full mx-auto overflow-x-auto max-m:p-2">
+        <div className="full-forecast bg-white p-4 rounded-lg max-w-full min-w-full mx-auto overflow-x-auto max-m:p-2">
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold flex-grow mb-2 max-m:text-lg">
                     {t('weather_forecast')}
@@ -395,15 +395,15 @@ const FullForecast = ({
             </div>
             <div className="tab-content">
                 {activeTab === 'part_of_day' && (
-                    <div className="part-of-day-container flex gap-4 overflow-x-auto">
+                    <div className="part-of-day-container flex flex-col gap-4 overflow-y-auto max-h-[80vh]">
                         {Object.keys(groupedForecast).map((day, index) => (
-                            <div key={index} className="day-forecast p-2 flex-shrink-0 bg-white rounded-lg shadow-md max-w-xs">
-                                <h3 className="date text-lg font-semibold mb-2">
+                            <div key={index} className="day-forecast p-4 bg-white rounded-lg shadow-md w-full">
+                                <h3 className="date text-lg font-semibold mb-4 text-center">
                                     {i18n.language === 'ka'
                                         ? `${getGeorgianWeekday(new Date(day).getUTCDay())}, ${new Date(day).getUTCDate()} ${getGeorgianMonth(new Date(day).getUTCMonth())}`
                                         : new Date(day).toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' })}
                                 </h3>
-                                <div className="flex flex-col gap-2">
+                                <div className="times-of-day-container grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                                     {partsOfDayOrder.map(pod => {
                                         const items = groupedForecast[day][pod];
                                         if (items.length > 0) {
@@ -413,11 +413,11 @@ const FullForecast = ({
                                             const icon = item.weather[0].icon;
 
                                             return (
-                                                <div key={pod} className="time-forecast rounded-lg p-2 flex-shrink-0 bg-white flex flex-col items-center gap-2 max-m:p-1">
-                                                    <p className="time font-semibold break-all text-center max-m:text-xs">{timeOfDay}</p>
-                                                    <div className="forecast-item flex flex-col items-center gap-2 p-2 bg-white rounded-lg mb-2 max-m:mb-1">
-                                                        <img src={`https://openweathermap.org/img/wn/${icon}.png`} alt="Weather Icon" className="weather-icon w-8 h-8 max-m:w-6 max-m:h-6" />
-                                                        <p className="max-m:text-xs">{temperature}°C</p>
+                                                <div key={pod} className="time-forecast rounded-lg p-4 bg-blue-200 flex flex-col items-center gap-2">
+                                                    <p className="time font-semibold text-center text-sm">{timeOfDay}</p>
+                                                    <div className="forecast-item flex flex-col items-center gap-2">
+                                                        <img src={`https://openweathermap.org/img/wn/${icon}.png`} alt="Weather Icon" className="weather-icon w-12 h-12" />
+                                                        <p className="temperature text-lg font-semibold">{temperature}°C</p>
                                                     </div>
                                                 </div>
                                             );
@@ -552,7 +552,7 @@ const WeatherApp = () => {
             const dayKey = date.toISOString().split('T')[0];
             const hour = date.getUTCHours();
             let pod;
-    
+
             if (hour >= 0 && hour < 5) {
                 pod = 'fn';
             } else if (hour >= 5 && hour < 11) {
@@ -562,7 +562,7 @@ const WeatherApp = () => {
             } else {
                 pod = 'e';
             }
-    
+
             if (!groupedData[dayKey]) {
                 groupedData[dayKey] = { fn: [], m: [], d: [], e: [] };
             }
@@ -570,6 +570,7 @@ const WeatherApp = () => {
         });
         return groupedData;
     };
+
     const getTimeOfDay = (pod) => {
         switch (pod) {
             case 'm': return t('morning');
@@ -621,7 +622,7 @@ const WeatherApp = () => {
         <>
             {error && <div id="error-container" className="text-red-500">{error}</div>}
             {weatherData && (
-                <WeatherInfo 
+                <WeatherInfo
                     weatherData={weatherData}
                     lastSuccessfulCity={lastSuccessfulCity}
                     toggleMenuVisibility={toggleMenuVisibility}
@@ -635,12 +636,12 @@ const WeatherApp = () => {
             </div>
             {fullForecastVisible && (
                 <div className="full-forecast-overlay fixed inset-0 bg-white bg-opacity-50 z-30 flex justify-start md:justify-center items-center" onClick={closeFullForecast}>
-                    <div className="relative max-w-full shadow-md border rounded-md" onClick={(e) => e.stopPropagation()}>
-                        <FullForecast 
-                            forecastData={forecastData} 
-                            weatherData={weatherData} 
-                            activeTab={activeTab} 
-                            setActiveTab={setActiveTab} 
+                    <div className="relative max-w-full min-w-full shadow-md border rounded-md" onClick={(e) => e.stopPropagation()}>
+                        <FullForecast
+                            forecastData={forecastData}
+                            weatherData={weatherData}
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
                             selectedDay={selectedDay}
                             setSelectedDay={setSelectedDay}
                             closeFullForecast={closeFullForecast}

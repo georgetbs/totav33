@@ -1,6 +1,5 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend from 'i18next-http-backend';
 import nextI18NextConfig from './next-i18next.config.js';
 
@@ -16,13 +15,12 @@ function setLanguage(language) {
   document.cookie = `i18next=${language}; path=/; max-age=31536000`; // 1 год
 }
 
-// Устанавливаем язык из кэша или используем язык устройства
+// Устанавливаем язык из кэша или используем язык по умолчанию
 const cachedLanguage = getCachedLanguage();
 const defaultLanguage = nextI18NextConfig.i18n.defaultLocale;
 
 i18n
   .use(HttpBackend)
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     ...nextI18NextConfig.i18n,
@@ -30,7 +28,7 @@ i18n
       loadPath: '/locales/{{lng}}/{{ns}}.json'
     },
     detection: {
-      order: ['localStorage', 'cookie', 'navigator', 'htmlTag'],
+      order: ['localStorage', 'cookie'], // Только вручную управляемые источники
       caches: ['localStorage', 'cookie'],
     },
     ns: ['common'],
@@ -40,9 +38,8 @@ i18n
     load: 'languageOnly',
   }, () => {
     // После инициализации i18n
-    const detectedLanguage = i18n.language;
-    const finalLanguage = cachedLanguage || detectedLanguage || defaultLanguage;
-    setLanguage(finalLanguage);
+    const detectedLanguage = cachedLanguage || defaultLanguage;
+    setLanguage(detectedLanguage);
   });
 
 export default i18n;
