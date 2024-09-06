@@ -36,7 +36,7 @@ const Feed = () => {
 
   return (
     <section className="feed bg-white border-0 w-full min-h-[400px]">
-      <h2 className="text-2xl font-semibold mb-4 px-4">{t('Feed')}</h2>
+     
       {isLoading ? (
         <div className="text-center">{t('loading')}</div>
       ) : (
